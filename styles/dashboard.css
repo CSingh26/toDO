@@ -149,7 +149,7 @@ li {
     position: absolute;
     background-color: #82c0cc;
     width: 400px;
-    height: 670px;
+    height: auto;
     margin-left: 15px;
     margin-bottom: 10px;
     margin-top: 200px;
@@ -332,4 +332,15 @@ li {
 .task a {
     color: #f65200;
     text-decoration: none;
+}
+
+.task-stats {
+    color: #f65200;
+    display: flex;
+    margin-left: 30px;
+    margin-top: 30px;
+    padding-bottom: 20px;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 700;
 }

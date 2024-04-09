@@ -76,6 +76,14 @@ document.addEventListener('click', function (e) {
         const taskIndex = e.target.getAttribute('data-key')
         loadTaskForEditing(taskIndex)
     }
+
+    if (e.target && e.target.className === 'task-checkbox') {
+        const index = e.target.getAttribute('data-key');
+        const tasks = JSON.parse(localStorage.getItem('userTasks')) || [];
+        tasks[index].completed = e.target.checked;
+        localStorage.setItem('userTasks', JSON.stringify(tasks));
+        renderListData(); 
+    }
 })
 
 function loadTaskForEditing(index) {
@@ -107,7 +115,8 @@ document.querySelector('form#task-form').addEventListener('submit', function (ev
     } else {
         let newTask = {
             'taskName': taskName.value,
-            'taskDescription': taskDes.value
+            'taskDescription': taskDes.value,
+            'completed': false
         }
         tasklist.push(newTask)
     }
@@ -120,16 +129,29 @@ document.querySelector('form#task-form').addEventListener('submit', function (ev
 
 function renderListData() {
     const tasks = JSON.parse(localStorage.getItem('userTasks'))
+    let completedTasks = 0
     let taskList = ''
 
     const taskULEL = document.querySelector('#taskList')
     taskULEL.innerHTML = ''
     tasks.forEach(function (task, index) {
-        taskULEL.innerHTML += '<li data-key="' + index + '"><h2> Task Name: ' + task.taskName +
-            '</h2>Task Description: <p>' + task.taskDescription + '</p> <a class="editTask" href="#" data-key="' +
-            index + '">Edit</a> <p></p><a class="removeTask" href="#" data-key="' +
-            index + '">Remove</a> </li>'
+        const checked = task.completed ? 'checked' : '';
+        if (task.completed) completedTasks++;
+
+        taskULEL.innerHTML += `
+          <li data-key="${index}" class="${task.completed ? 'completed-task' : ''}">
+            <label>
+              <input type="checkbox" class="task-checkbox" data-key="${index}" ${checked}> 
+              <span class="task-name">${task.taskName}</span>
+            </label>
+            <p class="task-description">${task.taskDescription}</p>
+            <a class="editTask" href="#" data-key="${index}">Edit</a>
+            <a class="removeTask" href="#" data-key="${index}">Remove</a>
+          </li>`
     })
+
+    document.querySelector('#completed-tasks').textContent = completedTasks
+    document.querySelector('#remaining-tasks').textContent = tasks.length - completedTasks
 }
 
 document.addEventListener('click', function (e) {
